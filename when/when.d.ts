@@ -3,7 +3,7 @@
 // Definitions by: Derek Cicerone <https://github.com/derekcicerone>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
-declare module When {
+declare module "when" {
 
     /**
      * Return a promise that will resolve only once all the supplied promisesOrValues
@@ -78,5 +78,3 @@ declare module When {
         reason?: any;
     }
 }
-
-export = When;
