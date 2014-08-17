@@ -443,6 +443,7 @@ interface KnockoutStatic {
 	unwrap(value: any): any;
 
 	computedContext: KnockoutComputedContext;
+	dependencyDetection: KnockoutComputedContext;
 
     //////////////////////////////////
     // templateSources.js
@@ -582,6 +583,10 @@ interface KnockoutComponentConfig {
 }
 
 interface KnockoutComputedContext {
+	begin(options: any): void;
+	end(): void;
+	registerDependency(subscribable: any): void;
+	ignore<TTarget, TReturn>(callback: (target: TTarget, ...args: any[]) => TReturn, target: TTarget, args: any[]): TReturn;
 	getDependenciesCount(): number;
 	isInitial: boolean;
 	isSleeping: boolean;
