@@ -3,8 +3,6 @@
 // Definitions by: RodneyJT <https://github.com/RodneyJT>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
-/// <reference path="../jquery/jquery.d.ts" />
-
 interface URIOptions {
     protocol?: string;
     username?: string;
@@ -181,6 +179,6 @@ declare class URI {
     static expand(template: string, vals: Object): URI;
 }
 
-interface JQuery {
-    uri(): URI;
+declare module "URIjs" {
+    export = URI;
 }
