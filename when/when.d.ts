@@ -66,6 +66,7 @@ declare module "when" {
         otherwise<U>(onRejected?: (reason: any) => Promise<U>): Promise<U>;
         otherwise<U>(onRejected?: (reason: any) => U): Promise<U>;
 
+        done<U>(onFulfilled: (value: T) => void, onRejected?: (reason: any) => void);
         then<U>(onFulfilled: (value: T) => Promise<U>, onRejected?: (reason: any) => Promise<U>, onProgress?: (update: any) => void): Promise<U>;
         then<U>(onFulfilled: (value: T) => Promise<U>, onRejected?: (reason: any) => U, onProgress?: (update: any) => void): Promise<U>;
         then<U>(onFulfilled: (value: T) => U, onRejected?: (reason: any) => Promise<U>, onProgress?: (update: any) => void): Promise<U>;
