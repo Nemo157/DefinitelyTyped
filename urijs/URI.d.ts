@@ -93,7 +93,7 @@ declare class URI {
     removeQuery(qry: Object): URI;
     addFragment(fragment: string): URI;
     //fragmentPrefix: string;
-    fragmentPrefix(prefix: string);
+    fragmentPrefix(prefix: string): void;
     normalize(): URI;
     normalizeProtocol(): URI;
     normalizeHostname(): URI;
