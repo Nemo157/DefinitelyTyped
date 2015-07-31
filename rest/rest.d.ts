@@ -6,12 +6,10 @@
 /// <reference path="../when/when.d.ts" />
 
 declare module "rest" {
-	import when = require("when");
+	import * as when from "when";
 
-	export = rest;
-
-	function rest(path: string): rest.ResponsePromise;
-	function rest(request: rest.Request): rest.ResponsePromise;
+	function rest(path: string): ResponsePromise;
+	function rest(request: Request): ResponsePromise;
 
 	module rest {
 		export function setDefaultClient(client: Client): void;
@@ -19,331 +17,306 @@ declare module "rest" {
 		export function resetDefaultClient(): void;
 
 		export function wrap<T>(interceptor: Interceptor<T>, config?: T): Client;
+	}
 
-		export interface Request {
-			method?: string;
-			path?: string;
-			params?: any;
-			headers?: any;
-			entity?: any;
-		}
+	export default rest;
 
-		export interface Status {
-			code: number;
-			text?: string;
-		}
+	export interface Request {
+		method?: string;
+		path?: string;
+		params?: any;
+		headers?: any;
+		entity?: any;
+	}
 
-		export interface Headers {
-			[index: string]: any // string or string[]
-		}
+	export interface Status {
+		code: number;
+		text?: string;
+	}
 
-		export interface Response {
-			request: Request;
-			raw: any;
-			status: Status;
-			headers: Headers;
-			entity: any;
-		}
+	export interface Headers {
+		[index: string]: any // string or string[]
+	}
 
-		export interface ResponsePromise extends when.Promise<Response> {
-			entity(): when.Promise<any>;
-			status(): when.Promise<number>;
-			headers(): when.Promise<Headers>;
-			header(headerName: string): when.Promise<any>; // string or string[]
-		}
+	export interface Response {
+		request: Request;
+		raw: any;
+		status: Status;
+		headers: Headers;
+		entity: any;
+	}
 
-		export interface Interceptor<T> {
-			(parent?: Client, config?: T): Client;
-		}
+	export interface ResponsePromise extends when.Promise<Response> {
+		entity(): when.Promise<any>;
+		status(): when.Promise<number>;
+		headers(): when.Promise<Headers>;
+		header(headerName: string): when.Promise<any>; // string or string[]
+	}
 
-		export interface Client {
-			(path: string): ResponsePromise;
-			(request: Request): ResponsePromise;
+	export interface Interceptor<T> {
+		(parent?: Client, config?: T): Client;
+	}
 
-			skip(): Client;
-			wrap<T>(interceptor: Interceptor<T>, config?: T): Client;
-		}
+	export interface Client {
+		(path: string): ResponsePromise;
+		(request: Request): ResponsePromise;
 
-		export interface Meta {
-			client: Client;
-			arguments: any;
-		}
+		skip(): Client;
+		wrap<T>(interceptor: Interceptor<T>, config?: T): Client;
+	}
+
+	export interface Meta {
+		client: Client;
+		arguments: any;
 	}
 }
 
 declare module "rest/interceptor" {
-	import when = require("when");
-	import rest = require("rest");
+	import * as when from "when";
+	import * as rest from "rest";
 
-	function interceptor<T, U>(config: interceptor.Config<T, U>): rest.Interceptor<T>;
+	function interceptor<T, U>(config: Config<T, U>): rest.Interceptor<T>;
 
-	module interceptor {
-		interface Config<T, U> {
-			init?: (config: T) => U;
-			request?: (request: rest.Request, config: U, meta: rest.Meta) => rest.Request | when.Promise<rest.Request>;
-			response?: (response: rest.Response, config: U, meta: rest.Meta) => rest.Response | when.Promise<rest.Response>;
-			success?: (response: rest.Response, config: U, meta: rest.Meta) => rest.Response | when.Promise<rest.Response>;
-			error?: (response: rest.Response, config: U, meta: rest.Meta) => rest.Response | when.Promise<rest.Response>;
-		}
+	export interface Config<T, U> {
+		init?: (config: T) => U;
+		request?: (request: rest.Request, config: U, meta: rest.Meta) => rest.Request | when.Promise<rest.Request>;
+		response?: (response: rest.Response, config: U, meta: rest.Meta) => rest.Response | when.Promise<rest.Response>;
+		success?: (response: rest.Response, config: U, meta: rest.Meta) => rest.Response | when.Promise<rest.Response>;
+		error?: (response: rest.Response, config: U, meta: rest.Meta) => rest.Response | when.Promise<rest.Response>;
 	}
 
-	export = interceptor;
+	export default interceptor;
 }
 
 declare module "rest/interceptor/defaultRequest" {
-	import rest = require("rest");
+	import * as rest from "rest";
 
-	var defaultRequest: rest.Interceptor<defaultRequest.Config>;
+	var defaultRequest: rest.Interceptor<Config>;
 
-	module defaultRequest {
-		interface Config {
-			method?: string;
-			path?: string;
-			params?: any;
-			headers?: any;
-			entity?: any;
-			mixin?: any;
-		}
+	export interface Config {
+		method?: string;
+		path?: string;
+		params?: any;
+		headers?: any;
+		entity?: any;
+		mixin?: any;
 	}
 
-	export = defaultRequest;
+	export default defaultRequest;
 }
 
 declare module "rest/interceptor/hateoas" {
-	import rest = require("rest");
+	import * as rest from "rest";
 
-	var hateoas: rest.Interceptor<hateoas.Config>;
+	var hateoas: rest.Interceptor<Config>;
 
-	module hateoas {
-		interface Config {
-			target?: string;
-			client?: rest.Client;
-		}
+	export interface Config {
+		target?: string;
+		client?: rest.Client;
 	}
 
-	export = hateoas;
+	export default hateoas;
 }
 
 declare module "rest/interceptor/location" {
-	import rest = require("rest");
+	import * as rest from "rest";
 
-	var location: rest.Interceptor<location.Config>;
+	var location: rest.Interceptor<Config>;
 
-	module location {
-		interface Config {
-			client?: rest.Client;
-			code?: number;
-		}
+	export interface Config {
+		client?: rest.Client;
+		code?: number;
 	}
 
-	export = location;
+	export default location;
 }
 
 declare module "rest/interceptor/mime" {
-	import rest = require("rest");
-	import registry = require("rest/mime/registry");
+	import * as rest from "rest";
+	import * as registry from "rest/mime/registry";
 
-	var mime: rest.Interceptor<mime.Config>;
+	var mime: rest.Interceptor<Config>;
 
-	module mime {
-		interface Config {
-			mime?: string;
-			accept?: string;
-			registry?: registry.Registry;
-			permissive?: boolean;
-		}
+	export interface Config {
+		mime?: string;
+		accept?: string;
+		registry?: registry.Registry;
+		permissive?: boolean;
 	}
 
-	export = mime;
+	export default mime;
 }
 
 declare module "rest/interceptor/pathPrefix" {
-	import rest = require("rest");
+	import * as rest from "rest";
 
-	var pathPrefix: rest.Interceptor<pathPrefix.Config>;
+	var pathPrefix: rest.Interceptor<Config>;
 
-	module pathPrefix {
-		interface Config {
-			prefix?: string;
-		}
+	export interface Config {
+		prefix?: string;
 	}
 
-	export = pathPrefix;
+	export default pathPrefix;
 }
 
 declare module "rest/interceptor/basicAuth" {
-	import rest = require("rest");
+	import * as rest from "rest";
 
-	var basicAuth: rest.Interceptor<basicAuth.Config>;
+	var basicAuth: rest.Interceptor<Config>;
 
-	module basicAuth {
-		interface Config {
-			username?: string;
-			password?: string;
-		}
+	export interface Config {
+		username?: string;
+		password?: string;
 	}
 
-	export = basicAuth;
+	export default basicAuth;
 }
 
 declare module "rest/interceptor/oAuth" {
-	import rest = require("rest");
+	import * as rest from "rest";
 
-	var oAuth: rest.Interceptor<oAuth.Config>;
+	var oAuth: rest.Interceptor<Config>;
 
-	module oAuth {
-		interface DismissWindow {
-			(): void;
-		}
-		interface Config {
-			token?: string;
-			clientId?: string;
-			scope?: string;
-			authorizationUrl?: string;
-			redirectUrl?: string;
-			windowStrategy?: (url: string) => DismissWindow;
-			oAuthCallback?: (hash: string) => void;
-			oAuthCallbackName?: string;
-		}
+	export interface DismissWindow {
+		(): void;
 	}
 
-	export = oAuth;
+	export interface Config {
+		token?: string;
+		clientId?: string;
+		scope?: string;
+		authorizationUrl?: string;
+		redirectUrl?: string;
+		windowStrategy?: (url: string) => DismissWindow;
+		oAuthCallback?: (hash: string) => void;
+		oAuthCallbackName?: string;
+	}
+
+	export default oAuth;
 }
 
 declare module "rest/interceptor/csrf" {
-	import rest = require("rest");
+	import * as rest from "rest";
 
-	var csrf: rest.Interceptor<csrf.Config>;
+	var csrf: rest.Interceptor<Config>;
 
-	module csrf {
-		interface Config {
-			name?: string;
-			token?: string;
-		}
+	export interface Config {
+		name?: string;
+		token?: string;
 	}
 
-	export = csrf;
+	export default csrf;
 }
 
 declare module "rest/interceptor/errorCode" {
-	import rest = require("rest");
+	import * as rest from "rest";
 
-	var errorCode: rest.Interceptor<errorCode.Config>;
+	var errorCode: rest.Interceptor<Config>;
 
-	module errorCode {
-		interface Config {
-			code?: number;
-		}
+	export interface Config {
+		code?: number;
 	}
 
-	export = errorCode;
+	export default errorCode;
 }
 
 declare module "rest/interceptor/retry" {
-	import rest = require("rest");
+	import * as rest from "rest";
 
-	var retry: rest.Interceptor<retry.Config>;
+	var retry: rest.Interceptor<Config>;
 
-	module retry {
-		interface Config {
-			initial?: number;
-			multiplier?: number;
-			max?: number;
-		}
+	export interface Config {
+		initial?: number;
+		multiplier?: number;
+		max?: number;
 	}
 
-	export = retry;
+	export default retry;
 }
 
 declare module "rest/interceptor/timeout" {
-	import rest = require("rest");
+	import * as rest from "rest";
 
-	var timeout: rest.Interceptor<timeout.Config>;
+	var timeout: rest.Interceptor<Config>;
 
-	module timeout {
-		interface Config {
-			timeout?: number;
-			transient?: boolean;
-		}
+	export interface Config {
+		timeout?: number;
+		transient?: boolean;
 	}
 
-	export = timeout;
+	export default timeout;
 }
 
 declare module "rest/interceptor/jsonp" {
-	import rest = require("rest");
+	import * as rest from "rest";
 
-	var jsonp: rest.Interceptor<jsonp.Config>;
+	var jsonp: rest.Interceptor<Config>;
 
-	module jsonp {
-		interface Config {
-			callback?: {
-				param?: string;
-				prefix?: string;
-				name?: string;
-			}
+	export interface Config {
+		callback?: {
+			param?: string;
+			prefix?: string;
+			name?: string;
 		}
 	}
 
-	export = jsonp;
+	export default jsonp;
 }
 
 declare module "rest/interceptor/ie/xdomain" {
-	import rest = require("rest");
+	import * as rest from "rest";
 
 	var xdomain: rest.Interceptor<{}>;
 
-	export = xdomain;
+	export default xdomain;
 }
 
 declare module "rest/interceptor/ie/xhr" {
-	import rest = require("rest");
+	import * as rest from "rest";
 
 	var xhr: rest.Interceptor<{}>;
 
-	export = xhr;
+	export default xhr;
 }
 
 declare module "rest/mime/registry" {
-	import when = require("when");
+	import * as when from "when";
 
-	var registry: registry.Registry;
+	var registry: Registry;
 
-	module registry {
-		interface MIMEConverter {
-			read(value: string): any | when.Promise<any>;
-			write(value: any): string | when.Promise<string>;
-		}
-
-		interface Registry {
-			lookup(mimeType: string): when.Promise<MIMEConverter>;
-			register(mimeType: string, converter: MIMEConverter): void;
-		}
+	export interface MIMEConverter {
+		read(value: string): any | when.Promise<any>;
+		write(value: any): string | when.Promise<string>;
 	}
 
-	export = registry;
+	export interface Registry {
+		lookup(mimeType: string): when.Promise<MIMEConverter>;
+		register(mimeType: string, converter: MIMEConverter): void;
+	}
+
+	export default registry;
 }
 
 declare module "rest/client/xhr" {
-	import rest = require("rest");
+	import * as rest from "rest";
 	var xhr: rest.Client;
-	export = xhr;
+	export default xhr;
 }
 
 declare module "rest/client/node" {
-	import rest = require("rest");
+	import * as rest from "rest";
 	var node: rest.Client;
-	export = node;
+	export default node;
 }
 
 declare module "rest/client/jsonp" {
-	import rest = require("rest");
+	import * as rest from "rest";
 	var jsonp: rest.Client;
-	export = jsonp;
+	export default jsonp;
 }
 
 declare module "rest/client/xdr" {
-	import rest = require("rest");
+	import * as rest from "rest";
 	var xdr: rest.Client;
-	export = xdr;
+	export default xdr;
 }

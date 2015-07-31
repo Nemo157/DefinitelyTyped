@@ -1,25 +1,25 @@
 /// <reference path="./rest.d.ts" />
 
-import when = require('when');
-import rest = require('rest');
+import when from 'when';
+import rest from 'rest';
 
-import defaultRequest = require('rest/interceptor/defaultRequest');
-import hateoas = require('rest/interceptor/hateoas');
-import location = require('rest/interceptor/location');
-import mime = require('rest/interceptor/mime');
-import pathPrefix = require('rest/interceptor/pathPrefix');
-import basicAuth = require('rest/interceptor/basicAuth');
-import oAuth = require('rest/interceptor/oAuth');
-import csrf = require('rest/interceptor/csrf');
-import errorCode = require('rest/interceptor/errorCode');
-import retry = require('rest/interceptor/retry');
-import timeout = require('rest/interceptor/timeout');
-import jsonp = require('rest/interceptor/jsonp');
-import xdomain = require('rest/interceptor/ie/xdomain');
-import xhr = require('rest/interceptor/ie/xhr');
+import defaultRequest from 'rest/interceptor/defaultRequest';
+import hateoas from 'rest/interceptor/hateoas';
+import location from 'rest/interceptor/location';
+import mime from 'rest/interceptor/mime';
+import pathPrefix from 'rest/interceptor/pathPrefix';
+import basicAuth from 'rest/interceptor/basicAuth';
+import oAuth from 'rest/interceptor/oAuth';
+import csrf from 'rest/interceptor/csrf';
+import errorCode from 'rest/interceptor/errorCode';
+import retry from 'rest/interceptor/retry';
+import timeout from 'rest/interceptor/timeout';
+import jsonp from 'rest/interceptor/jsonp';
+import xdomain from 'rest/interceptor/ie/xdomain';
+import xhr from 'rest/interceptor/ie/xhr';
 
-import interceptor = require('rest/interceptor');
-import registry = require('rest/mime/registry');
+import interceptor from 'rest/interceptor';
+import registry from 'rest/mime/registry';
 
 rest('/').then(function(response) {
     console.log('response: ', response);
@@ -136,10 +136,10 @@ client = rest
     .wrap(knownConfig, { prop: 'value' })
     .wrap(transformedConfig, { prop: 'value' });
 
-import xhrClient = require('rest/client/xhr');
-import nodeClient = require('rest/client/node');
-import jsonpClient = require('rest/client/jsonp');
-import xdrClient = require('rest/client/xdr');
+import xhrClient from 'rest/client/xhr';
+import nodeClient from 'rest/client/node';
+import jsonpClient from 'rest/client/jsonp';
+import xdrClient from 'rest/client/xdr';
 
 rest.setDefaultClient(xhrClient);
 rest.setDefaultClient(nodeClient);
