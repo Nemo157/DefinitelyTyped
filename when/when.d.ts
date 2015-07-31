@@ -234,7 +234,7 @@ declare module "when" {
 }
 
 declare module "when/node" {
-    import when = require('when');
+    import * as when from 'when';
     import _ = when._;
 
     function lift<T>(fn: _.NodeFn0<T>): _.LiftedFn0<T>;
